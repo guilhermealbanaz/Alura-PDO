@@ -4,15 +4,15 @@ namespace Alura\Pdo\Infraestructure\Repository;
 
 use Alura\Pdo\Domain\Model\Student;
 use Alura\Pdo\Domain\Repository\StudentRepository;
-use Alura\Pdo\Infraestructure\Persistence\ConnectionCreator;
 use PDO;
+use RuntimeException;
 
 class PdoStudentRepository implements StudentRepository
 {
     private PDO $connection;
 
-    public function __construct(){
-        $this->connection = ConnectionCreator::createConnection();
+    public function __construct(PDO $connection){
+        $this->connection = $connection; //injeção de dependencia
     }
 
     public function allStudents():array
@@ -45,8 +45,12 @@ class PdoStudentRepository implements StudentRepository
     }
     public function insert(Student $student):bool
     {
-        $stmt = $this->connection->prepare("INSERT INTO students(name, birth_date) VALUES(?,?)");
+        $query = "INSERT INTO students(name, birth_date) VALUES(?,?);";
+        $stmt = $this->connection->prepare($query);
         
+        if($stmt == false){
+            throw new RuntimeException(message: "Erro na query do banco");
+        }
         $success =  $stmt->execute([
             $student->name(),
             $student->birthDate()->format('Y-m-d')
