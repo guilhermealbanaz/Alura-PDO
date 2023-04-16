@@ -7,11 +7,11 @@ use Alura\Pdo\Infraestructure\Persistence\ConnectionCreator;
 
 require_once 'vendor/autoload.php';
 
-    $connection = ConnectionCreator::createConnection();
-    $studentRepository = new PdoStudentRepository($connection);
-    
-    $connection->beginTransaction(); //inicia uma transação
-try{    
+$connection = ConnectionCreator::createConnection();
+$studentRepository = new PdoStudentRepository($connection);
+
+$connection->beginTransaction(); //inicia uma transação
+try {
     $aStudent = new Student(null, 'Nico Steppat', new DateTimeImmutable('1985-05-01'));
     $studentRepository->save($aStudent);
     $anotherStudent = new Student(
@@ -21,7 +21,7 @@ try{
     );
     $studentRepository->save($anotherStudent);
     $connection->commit();
-}catch(\RuntimeException $e){
+} catch (\PDOException $e) {
     echo $e->getMessage();
     $connection->rollBack();
 }
