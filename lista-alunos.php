@@ -2,26 +2,32 @@
 
 use Alura\Pdo\Domain\Model\Student;
 use Alura\Pdo\Infraestructure\Persistence\ConnectionCreator;
+use Alura\Pdo\Infraestructure\Repository\PdoStudentRepository;
 
 require_once 'vendor/autoload.php';
 
 $pdo = ConnectionCreator::createConnection();
+$repository = new PdoStudentRepository($pdo);
+$studentList = $repository->allStudents();
+echo '<pre>';
+var_dump($studentList);
+echo '</pre>';
 
-$statement = $pdo->query("SELECT * FROM students");
+// $statement = $pdo->query("SELECT * FROM students");
 
 // var_dump($statement->fetchColumn(1)); busca uma coluna de um objeto, mesma lógica do fetch ocupa menos espaço por a cada renderização a render passada não ocupar mais espaço
 
 // var_dump($statement->fetchObject(Student::class)); traz um objeto da classe passada como parâmetro
 
-$studentDataList = $statement->fetchAll(PDO::FETCH_ASSOC); // busca todas as linha (fetchAll()) armazena em um objeto cada linha
-$studentList = [];
-foreach($studentDataList as $studentData){
-    $studentList[] = new Student(
-        $studentData['id'],
-        $studentData['name'],
-        new \DateTimeImmutable($studentData['birth_date'])
-    );
-}
+// $studentDataList = $statement->fetchAll(PDO::FETCH_ASSOC); // busca todas as linha (fetchAll()) armazena em um objeto cada linha
+// $studentList = [];
+// foreach($studentDataList as $studentData){
+//     $studentList[] = new Student(
+//         $studentData['id'],
+//         $studentData['name'],
+//         new \DateTimeImmutable($studentData['birth_date'])
+//     );
+// }
 
 
 
@@ -40,6 +46,6 @@ foreach($studentDataList as $studentData){
 
 
 
-echo '<pre>';
-var_dump($studentList);
-echo '</pre>';
+// echo '<pre>';
+// var_dump($studentList);
+// echo '</pre>';
